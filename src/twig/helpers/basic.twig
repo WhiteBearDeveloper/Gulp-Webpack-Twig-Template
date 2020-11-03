@@ -1,0 +1,192 @@
+{#
+    Вывод свг-иконки. По дефолту будут выведены в исходном размере
+    Важно убирать атрибуты fill, stroke, opacity и т.п. для стилизации
+
+    @param {String} name - имя иконки
+    @param {String} [class] - дополнительные классы
+#}
+{% macro svg(name, class) %}{% spaceless %}
+    <span class="svg svg-{{ name }} {{ class }}">
+        <svg preserveAspectRatio="none">
+            <use xlink:href="./assets/img/svg/sprite.svg#{{ name }}"></use>
+        </svg>
+    </span>
+{% endspaceless %}{% endmacro %}
+
+{#
+    Вывод свг-иконки, имитация иконочного шрифта.
+    Важно убирать атрибуты fill, stroke, opacity и т.п. для стилизации!
+
+    @param {String} name - имя иконки
+    @param {String} [class] - дополнительные классы
+#}
+{% macro svgFontSize(name, class) %}{% spaceless %}
+    <svg class="icon icon-{{ name }} {{ class }}" preserveAspectRatio="none">
+        <use xlink:href="./assets/img/svg/sprite.svg#{{ name }}"></use>
+    </svg>
+{% endspaceless %}{% endmacro %}
+
+
+{% macro input(options) %}{% spaceless %}
+    {% from 'normalize.twig' import class_normalizer, duplicate_normalizer, attrs_normalizer %}
+    {% from _self import svg %}
+
+    {# Объединение дефолтных и переданных опций #}
+    {% set options = {
+        type: 'text',
+        name: '',
+        value: '',
+        placeholder: null,
+        label: 'текстовое поле',
+        required: false,
+        disabled: false,
+        readonly: false,
+        attrs: {},
+        class: '',
+        fieldAttrs: {},
+        error: null,
+    }|merge(options|default({})) %}
+
+    {% set tag = options.tag == 'textarea' ? 'textarea' : 'input' %}
+
+    <div class="{{ duplicate_normalizer(class_normalizer(options.class)) }} {% if options.error %}is-error{% endif %} {% if options.required %}is-required{% endif %} {% if tag == 'textarea' %}b4-field_textarea{% endif %}" data-js-inputel {% if options.fieldAttrs is not empty %}{{ options.fieldAttrs|json_encode }}{% endif %}>
+        <div class="">
+            <div class="">
+                <{{ tag }}
+                    {% if tag != 'textarea' %}
+                        type="{{ options.type }}"
+                        value="{{ options.value|raw }}"
+                    {% endif %}
+                    {% if options.name %}name="{{ options.name }}"{% endif %}
+                    {% if options.placeholder %}placeholder="{{ options.placeholder|raw }}"{% endif %}
+                    {% if options.required %}required{% endif %}
+                    {% if options.disabled %}disabled{% endif %}
+                    {% if options.readonly %}readonly{% endif %}
+                    {% if options.attrs is not empty %}{{ attrs_normalizer(options.attrs) }}{% endif %}
+                    class="b4-field__input"
+                >{% if tag == 'textarea' %}{{- options.value -}}</{{ tag }}>{% endif %}
+                {% if options.placeholder is empty and options.label %}
+                    <label class="">{{ options.label|raw }}</label>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+{% endspaceless %}{% endmacro %}
+
+{% macro button(options) %}
+    {% from _self import svgFontSize %}
+    {% from 'normalize.twig' import class_normalizer, duplicate_normalizer %}
+
+    {# Объединение дефолтных и переданных опций #}
+    {% set options = {
+        type: 'button',
+        href: null,
+        tag: 'button',
+        class: '',
+        name: '',
+        value: '',
+        disabled: false,
+        attrs: {},
+        icon: '',
+    }|merge(options|default({})) %}
+
+    {% if options.href is not empty %}
+        {% set options = options|merge({tag: 'a'}) %}
+    {% endif %}
+
+    {% set tag = options.tag %}
+
+    {% if tag == 'a' %}
+        <a href="{{ options.href|default('javascript:void(0)') }}" class="button {{ duplicate_normalizer(class_normalizer('button', options.class)) }}" {% if options.attrs is not empty %}{{ options.attrs|json_encode }}{% endif %} data-pulsy>
+            <span class="button__content">
+                {{ options.title|raw }}
+                {% if options.icon is not empty %}
+                    {{ svgFontSize(options.icon, 'button__icon') }}
+                {% endif %}
+            </span>
+        </a>
+    {% elseif tag == 'button' %}
+        <button type="{{ options.type }}" class="button {{ duplicate_normalizer(class_normalizer('button', options.class)) }}" {% if options.disabled %}disabled{% endif %} {% if options.attrs is not empty %}{{ options.attrs|json_encode }}{% endif %} data-pulsy>
+            <span class="button__content">
+                {{ options.title|raw }}
+                {% if options.icon is not empty %}
+                    {{ svgFontSize(options.icon, 'button__icon') }}
+                {% endif %}
+            </span>
+        </button>
+    {% endif %}
+{% endmacro %}
+
+{#{% macro selectel(settings) %}{% spaceless %}#}
+{#    {% from 'normalize.twig' import class_normalizer, duplicate_normalizer, attrs_normalizer %}#}
+{#    {% from _self import svg %}#}
+
+{#    {% set currentSelection = [] %}#}
+{#    {% set defaultValue = '' %}#}
+{#    {% set currentValue = '' %}#}
+
+{#    <div class="b4-field b4-field_selectel#}
+{#        {{ duplicate_normalizer(class_normalizer('b4-field', settings.class)) }}#}
+{#        {% if settings.label is not defined %}b4-field_common{% endif %}#}
+{#        {% if settings.error %}is-error{% endif %}#}
+{#        {% if settings.required %}is-required{% endif %}"#}
+{#        {% if settings.fieldAttrs is not empty %}{{ settings.fieldAttrs|json_encode }}{% endif %}#}
+{#        data-js-inputel data-type="select" data-js-selectel#}
+{#    >#}
+{#        <div class="b4-field__container">#}
+{#            {% if '_light' not in settings.class %}#}
+{#                <fieldset class="b4-field__fieldset">#}
+{#                    <legend class="b4-field__legend"></legend>#}
+{#                </fieldset>#}
+{#            {% endif %}#}
+{#            <div class="b4-field__entry">#}
+{#                <select#}
+{#                    {% if settings.name %}name="{{ settings.name }}"{% endif %}#}
+{#                    {% if settings.required %}required{% endif %}#}
+{#                    {% if settings.disabled %}disabled{% endif %}#}
+{#                    {% if settings.readonly %}readonly{% endif %}#}
+{#                    {% if settings.attrs is not empty %}{{ attrs_normalizer(settings.attrs) }}{% endif %}#}
+{#                    class="b4-field__select"#}
+{#                    data-js-selectel-input#}
+{#                >#}
+{#                    {% for option in settings.options %}#}
+{#                        {% if not defaultValue and (option.default or option.value is not defined) %}#}
+{#                            {% set defaultValue = option.title %}#}
+{#                        {% endif %}#}
+{#                        {% if option.selected %}#}
+{#                            {% set currentSelection = currentSelection|merge([option.title]) %}#}
+{#                        {% endif %}#}
+
+
+{#                        <option#}
+{#                            value="{{ option.value }}"#}
+{#                            {% if option.selected %}selected{% endif %}#}
+{#                        >#}
+{#                            {{- option.title|raw -}}#}
+{#                        </option>#}
+{#                    {% endfor %}#}
+
+{#                    {% if defaultValue %}#}
+{#                        {% set currentValue = defaultValue %}#}
+{#                    {% elseif currentSelection|length %}#}
+{#                        {% set currentValue = currentSelection|split(',') %}#}
+{#                    {% elseif settings.label %}#}
+{#                        {% set currentValue = '' %}#}
+{#                    {% else %}#}
+{#                        {% set currentValue = (settings.options|first).title %}#}
+{#                    {% endif %}#}
+{#                </select>#}
+{#                <input class="b4-field__input" readonly disabled value="{{ currentValue|raw }}" data-js-selectel-value>#}
+{#                {% if settings.label %}#}
+{#                    <label class="b4-field__label">{{ settings.label|raw }}</label>#}
+{#                {% endif %}#}
+{#                <div class="b4-field__indicator">#}
+{#                    {{ svg('angle-down-small', 'b4-field__indicator-icon') }}#}
+{#                </div>#}
+{#                {% if settings.error is not empty %}#}
+{#                    {{ svg('alert', 'b4-field__error-icon') }}#}
+{#                {% endif %}#}
+{#            </div>#}
+{#        </div>#}
+{#    </div>#}
+{#{% endspaceless %}{% endmacro %}#}

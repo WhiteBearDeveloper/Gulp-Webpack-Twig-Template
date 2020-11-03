@@ -1,0 +1,33 @@
+{% from '../helpers/basic.twig' import svg, svgFontSize %}
+
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>{% block title %}{% endblock %}</title>
+    <link rel="stylesheet" href="assets/css/app.min.css">
+    <script src="assets/js/vendor.js"></script>
+    <script src="assets/js/app.js"></script>
+</head>
+<body class="body">
+    <div class="body__wrapper">
+        <div class="body__header">
+            {% block header %}
+                {% include 'header.twig' %}
+            {% endblock %}
+        </div>
+        <div class="body__container">
+            {% block body %}
+            {% endblock %}
+        </div>
+        <div class="body__footer">
+            {% block footer %}
+                {% include 'footer.twig' %}
+            {% endblock %}
+        </div>
+    </div>
+</body>
+</html>

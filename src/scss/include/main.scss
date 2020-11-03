@@ -1,0 +1,22 @@
+.body {
+    &__wrapper {
+        display: flex;
+        flex-direction: column;
+        min-height: 100vh;
+        overflow: hidden;
+    }
+    &__container {
+        flex: 1 1 auto;
+    }
+}
+.bold{
+    font-weight: 700;
+}
+.link{
+    //color: $color-turquoise-400;
+    text-decoration: underline;
+
+    &:hover{
+        text-decoration: none;
+    }
+}

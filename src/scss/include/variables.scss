@@ -1,0 +1,34 @@
+// palette
+//$color-turquoise-400: #00c7d2;
+
+// color scheme
+//$color-black: $color-black-900;
+//$color-white: $color-white-900;
+
+//$color-primary: $color-turquoise-400;
+//$color-text: $color-black-300;
+//$color-danger: $color-red-500;
+//$color-success: $color-green-400;
+
+//transitions
+$transition-main: .3s cubic-bezier(.16,.16,.40,.82);
+
+//font-size
+$root-font-size: 10px;
+$font-size: 16px;
+
+//grid
+$container-max-width: 1920px;
+$grid-columns-count: 12;
+$grid-gap: 15px;
+$grid-gap-small: 12px;
+
+//media
+$media-xl: 1600px;
+$media-lg: 1280px;
+$media-md: 992px;
+$media-sm: 767px;
+$media-xs: 576px;
+$media-xxs: 480px;
+
+$media-sizes: ('xl': $media-xl, 'lg': $media-lg, 'md': $media-md, 'sm': $media-sm, 'xs': $media-xs, 'xxs': $media-xxs);

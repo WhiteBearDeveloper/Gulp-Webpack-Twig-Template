@@ -1,0 +1,73 @@
+html, body, div, span, h1, h2, h3, h4, h5, h6, p, blockquote, pre,
+a, b, u, i,
+dl, dt, dd, ol, ul, li,
+form, label,
+table, tbody, tfoot, thead, tr, th, td,
+input, textarea, button, select,
+figure
+{
+    margin: 0;
+    padding: 0;
+    border: 0;
+    font-size: 100%;
+    font: inherit;
+    background: transparent;
+}
+
+*,
+*::before,
+*::after {
+    box-sizing: border-box;
+}
+
+ul,
+ol {
+    list-style-type: none;
+}
+
+table {
+    border-collapse: collapse;
+    border-spacing: 0;
+}
+
+input::-ms-clear {
+    display: none;
+}
+input, select, textarea, a
+{
+    outline:none;
+    border: none;
+}
+nav{
+    width: 100%;
+}
+a:not([class]) {
+    text-decoration-skip-ink: auto;
+}
+
+select,
+textarea,
+input {
+    width: 100%;
+}
+
+html, body {
+    font-size: 16px;
+    line-height: 1.4;
+}
+
+html {
+    height: 100%;
+    -moz-osx-font-smoothing: grayscale;
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+    font-feature-settings: 'liga';
+}
+
+body {
+    height: 100%;
+    width: 100%;
+    min-height: 100vh;
+    scroll-behavior: smooth;
+    text-rendering: optimizeSpeed;
+}

@@ -1,0 +1,100 @@
+/* вырезает единицы измерения */
+@function remove-unit($value) {
+    @return $value / ($value * 0 + 1);
+}
+
+/* переводит px в rem */
+@function rem($size) {
+    @return remove-unit($size) / remove-unit($root-font-size) * 1rem;
+}
+
+/* устанавливает line-height из px */
+@function line-height($line-height, $size: false) {
+    @if ($size) {
+        $result: remove-unit($line-height) / remove-unit($size);
+        @return $result;
+    }
+    @return remove-unit($size) / remove-unit($root-font-size) * 1rem;
+}
+
+@mixin font($size: 1rem, $weight: 400, $line-height: 1.5) {
+    font: {
+        size: $size;
+        weight: $weight;
+    };
+    line-height: $line-height;
+}
+
+@mixin trbl($arguments...) {
+    @if (length($arguments) == 1) {
+        top: $arguments;
+        right: $arguments;
+        bottom: $arguments;
+        left: $arguments;
+    }
+}
+
+@mixin rhythm($size, $line-height: false) {
+    font-size: remove-unit($size) * 1px; //fallback
+    font-size: rem($size);
+    @if ($line-height) {
+        line-height: line-height($line-height, $size);
+    }
+}
+
+@mixin line-clamp($size) {
+    display: -webkit-box;
+    -webkit-line-clamp: $size;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+}
+
+@mixin glitchText($offset, $text, $color, $backgroundColor) {
+    content: $text;
+    text-transform: inherit;
+    position: absolute;
+    left: $offset;
+    top: $offset;
+    clip: rect(0, 900px, 0, 0);
+    background-color: $backgroundColor;
+    color: $color;
+    text-shadow: -3px 0 $color-primary;
+    animation: glitch 3s infinite alternate-reverse;
+}
+
+@mixin placeholder {
+    &::-webkit-input-placeholder {
+        @content;
+    }
+    &:-moz-placeholder {
+        @content;
+    }
+    &::-moz-placeholder {
+        @content;
+    }
+    &:-ms-input-placeholder {
+        @content;
+    }
+}
+
+@mixin media-breakpoint-down($breakpoint, $breakpoints: $media-sizes) {
+    @if index(map-keys($breakpoints), $breakpoint) {
+        $normalizedBreakpoint: map-get($breakpoints, $breakpoint) - .02;
+        @media (max-width: $normalizedBreakpoint) {
+            @content;
+        }
+    } @else {
+        @error "Значение #{$breakpoint} должно находиться в массиве!";
+    }
+}
+
+@mixin media-breakpoint-up($breakpoint, $breakpoints: $media-sizes) {
+    @if index(map-keys($breakpoints), $breakpoint) {
+        $normalizedBreakpoint: map-get($breakpoints, $breakpoint) - .02;
+        @media (min-width: $normalizedBreakpoint) {
+            @content;
+        }
+    } @else {
+        @error "Значение #{$breakpoint} должно находиться в массиве!";
+    }
+}

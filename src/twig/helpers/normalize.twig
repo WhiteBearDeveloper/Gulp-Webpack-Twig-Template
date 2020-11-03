@@ -1,0 +1,57 @@
+{#
+    Нормализует классы по отношению к блоку
+
+    @param {String} blockClass - базовый класс блока
+    @param {String|Array} classes - добавочные классы для блока
+
+    @example
+        {{ class_normalizer('block', '_small list-item') }}
+        // returns block_small list-item
+#}
+{% macro class_normalizer(blockClass, classes) %}{% spaceless %}
+    {% set result = '' %}
+    {% if classes is iterable %}
+        {% for class in classes %}
+            {% set result = result ~ (class|first == '_' ? blockClass ~ class ~ ' ' : class ~ ' ') %}
+        {% endfor %}
+    {% else %}
+        {% for class in classes|split(' ') %}
+            {% set result = result ~ (class|first == '_' ? blockClass ~ class ~ ' ' : class ~ ' ') %}
+        {% endfor %}
+    {% endif %}
+    {{ result }}
+{% endspaceless %}{% endmacro %}
+
+{#
+    Убирает дубликаты. Предназначено для классов
+
+    @param {String} classes - исходные классы
+
+    @example
+        {{ duplicate_normalizer('block block_small block_small') }}
+        // returns block block_small
+#}
+{% macro duplicate_normalizer(classes) %}{% spaceless %}
+    {% set result = [] %}
+    {% for class in classes|split(' ') %}
+        {% if class not in result %}
+            {% set result = result|merge([class]) %}
+        {% endif %}
+    {% endfor %}
+    {{ result|join(' ') }}
+{% endspaceless %}{% endmacro %}
+
+{#
+    Нормализует атрибуты
+
+    @param {Object} attrs - атрибуты
+
+    @example
+        {{ attrs_normalizer({ 'data-key': 23 }) }}
+        // returns data-key="23"
+#}
+{% macro attrs_normalizer(attrs) %}{% spaceless %}
+    {% for attrKey, attr in attrs %}
+        {{ attrKey }}='{{ attr is iterable ? attr|json_encode|raw : attr }}'
+    {% endfor %}
+{% endspaceless %}{% endmacro %}

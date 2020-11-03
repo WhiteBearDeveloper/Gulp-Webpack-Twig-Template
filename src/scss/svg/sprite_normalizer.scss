@@ -1,0 +1,91 @@
+@import "sprite";
+
+// получить иконку по имени
+@function get-svg-icon($name) {
+    $icon: map-get($icons, $name);
+    @if $icon == null {
+        @warn "Не найден svg с именем #{$name}";
+    }
+    @return map-get($icon, 'svg');
+}
+
+// получить атрибуты сопуствующей иконки
+@function get-icon-attr($name, $attr) {
+    $icon: map-get($icons, $name);
+    @if $icon == null {
+        @warn "Не найден svg с именем #{$name}";
+    }
+    @return map-get($icon, $attr);
+}
+
+// Заменяет все вхождения строки поиска на строку замены
+@function str-replace($string, $search, $replace: '') {
+    $index: str-index($string, $search);
+    @if $index {
+        @return str-slice($string, 1, $index - 1) + $replace + str-replace(str-slice($string, $index + str-length($search)), $search, $replace);
+    }
+    @return $string;
+}
+
+// Кодировка html-символов
+@function url-encode($string) {
+    $map: (
+            //"%": "%25",
+            "<": "%3C",
+            ">": "%3E",
+            "\"": "'",
+            //" ": "%20",
+            //"!": "%21",
+            //"*": "%2A",
+            //"'": "%27",
+            //'"': "%22",
+            //"(": "%28",
+            //")": "%29",
+            //";": "%3B",
+            //":": "%3A",
+            //"@": "%40",
+            //"&": "%26",
+            //"=": "%3D",
+            //"+": "%2B",
+            //"$": "%24",
+            //",": "%2C",
+            //"/": "%2F",
+            //"?": "%3F",
+            "#": "%23",
+            //"[": "%5B",
+            //"]": "%5D"
+    );
+    $new: $string;
+    @each $search, $replace in $map {
+        $new: str-replace($new, $search, $replace);
+    }
+    @return $new;
+}
+
+// Формирование url для использования в background|background-image
+@function inline-svg($string) {
+    @return url('data:image/svg+xml;utf8,#{url-encode($string)}');
+}
+
+@mixin make-icon($name, $fill, $saveSize: true) {
+    $icon: get-svg-icon($name);
+    @if $fill {
+        $icon: str-replace($icon, '<svg', '<svg fill="#{$fill}"');
+    }
+    display: inline-block;
+    background: inline-svg($icon) 0 0 no-repeat;
+    background-size: 100% 100%;
+    @if $saveSize {
+        $iconWidth: get-icon-attr($name, 'width');
+        $iconHeight: get-icon-attr($name, 'height');
+        width: $iconWidth;
+        height: $iconHeight;
+    }
+}
+@mixin change-icon-color($name, $fill) {
+    $icon: get-svg-icon($name);
+    @if $fill {
+        $icon: str-replace($icon, '<svg', '<svg fill="#{$fill}"');
+    }
+    background: inline-svg($icon) 0 0 no-repeat;
+}
