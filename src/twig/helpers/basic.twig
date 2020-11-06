@@ -73,6 +73,29 @@
     </div>
 {% endspaceless %}{% endmacro %}
 
+{% macro inputCheck(options) %}{% spaceless %}
+    {% from 'normalize.twig' import class_normalizer, duplicate_normalizer, attrs_normalizer %}
+    {% from _self import svg %}
+
+    {# Объединение дефолтных и переданных опций #}
+    {% set options = {
+        text: 'text',
+        type: 'checkbox',
+        label: 'текстовое поле',
+        name: '',
+        checked: false,
+        class: '',
+    }|merge(options|default({})) %}
+
+    {% set type = options.type == 'checkbox' ? 'checkbox' : 'radio' %}
+
+    <label class="form__check {{ duplicate_normalizer(class_normalizer('form', options.class)) }}">
+        <input type="{{ type }}" class="form__check-original" {% if options.checked %}checked{% endif %} name="{{ options.name }}" />
+        <span class="form__check-{{ type }}"></span>
+        <span class="form__check-text">{{ options.text}}</span>
+    </label>
+{% endspaceless %}{% endmacro %}
+
 {% macro button(options) %}
     {% from _self import svgFontSize %}
     {% from 'normalize.twig' import class_normalizer, duplicate_normalizer %}
